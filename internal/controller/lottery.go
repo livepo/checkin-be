@@ -3,8 +3,11 @@ package controller
 import (
 	"checkin-be/internal/model"
 	"checkin-be/pkg/invoker"
+	"errors"
 	"math/rand"
 	"time"
+
+	"gorm.io/gorm"
 
 	"github.com/spf13/cast"
 
@@ -12,7 +15,7 @@ import (
 )
 
 type CheckinRequest struct {
-	Username string `json:"username"`
+	Username string `json:"username" binding:"required"`
 	Avatar   string `json:"avatar"`
 	Poster   string `json:"poster"`
 }
@@ -28,7 +31,7 @@ func Checkin(c *gin.Context) {
 		return
 	}
 	user := model.User{}
-	if err := invoker.DB.Model(model.User{}).First(&user, "username = ?", req.Username).Error; err != nil {
+	if err := invoker.DB.Model(model.User{}).First(&user, "username = ?", req.Username).Error; errors.Is(err, gorm.ErrRecordNotFound) {
 		user.Username = req.Username
 		user.Avatar = req.Avatar
 		user.Poster = req.Poster

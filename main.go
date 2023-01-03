@@ -19,6 +19,7 @@ func main() {
 	api := router.Group("/api/v1")
 	api.GET("/checkin-users", controller.CheckinUsers)                              // 签到用户列表
 	api.POST("/checkin", controller.Checkin)                                        // 签到
+	api.DELETE("/checkin-uesrs/:id", controller.DeleteCheckinUser)                  // 删除有问题的签到数据
 	api.POST("/generate-exchange-card-pairs", controller.GenerateExchangeCardPairs) // 生成交换贺卡列表
 	api.GET("/exchange-card-pairs", controller.ExchangeCardPairs)                   // 列出交换贺卡列表
 	api.POST("/generate-lottery", controller.GenerateLottery)                       // 点击生成抽奖
