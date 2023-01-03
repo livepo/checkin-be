@@ -3,11 +3,8 @@ package controller
 import (
 	"checkin-be/internal/model"
 	"checkin-be/pkg/invoker"
-	"errors"
 	"math/rand"
 	"time"
-
-	"gorm.io/gorm"
 
 	"github.com/spf13/cast"
 
@@ -31,17 +28,14 @@ func Checkin(c *gin.Context) {
 		return
 	}
 	user := model.User{}
-	if err := invoker.DB.Model(model.User{}).First(&user, "username = ?", req.Username).Error; errors.Is(err, gorm.ErrRecordNotFound) {
-		user.Username = req.Username
-		user.Avatar = req.Avatar
-		user.Poster = req.Poster
-	}
-	if err := invoker.DB.Create(&user).Error; err != nil {
-		c.JSON(200, gin.H{
-			"code": 1,
-			"msg":  "db error",
-		})
-		return
+	invoker.DB.Model(model.User{}).First(&user, "username = ?", req.Username)
+	user.Username = req.Username
+	user.Avatar = req.Avatar
+	user.Poster = req.Poster
+	if user.ID == 0 {
+		invoker.DB.Create(&user)
+	} else {
+		invoker.DB.Updates(&user)
 	}
 	c.JSON(200, gin.H{
 		"code": 0,
@@ -161,7 +155,7 @@ func GenerateLottery(c *gin.Context) {
 	if len(users) < cast.ToInt(ls.Amount) {
 		c.JSON(200, gin.H{
 			"code": 1,
-			"msg":  "number of users who never be choose has not enough, setup lottery label and amount again",
+			"msg":  "number of users who never be chosen has not enough, setup lottery label and amount again",
 		})
 		return
 	}
@@ -173,7 +167,7 @@ func GenerateLottery(c *gin.Context) {
 	rand.Shuffle(len(arr), func(i, j int) { arr[i], arr[j] = arr[j], arr[i] })
 	chosen := make([]*model.User, 0)
 	for _, i := range arr[:ls.Amount] {
-		chosen = append(chosen, users[i])
+		chosen = append(chosen, users[i-1])
 	}
 	for _, c := range chosen {
 		lr := model.LotteryResult{
@@ -244,4 +238,22 @@ func Lotteries(c *gin.Context) {
 		"msg":  "success",
 		"data": resp,
 	})
+}
+
+// DeleteCheckinUser 删除有问题的签到数据
+func DeleteCheckinUser(c *gin.Context) {
+	userID := cast.ToUint(c.Param("userid"))
+	if userID == 0 {
+		c.JSON(200, gin.H{
+			"code": 1,
+			"msg":  "param error",
+		})
+		return
+	}
+	invoker.DB.Model(model.User{}).Delete(&model.User{}, "id = ?", userID)
+	c.JSON(200, gin.H{
+		"code": 0,
+		"msg":  "success",
+	})
+
 }
