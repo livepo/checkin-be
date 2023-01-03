@@ -25,6 +25,3 @@ spec:
           volumeMounts:
             - name: checkin
               mountPath: /data
-          # command: [ "python", "yespmp.py" ]
-          # command: [ "/bin/sh", "-c", "--" ]
-          # args: [ "while true; do sleep 30; done;" ]

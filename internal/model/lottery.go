@@ -6,7 +6,7 @@ import (
 
 type User struct {
 	gorm.Model
-	UserName string `gorm:"username"`
+	Username string `gorm:"username"`
 	Avatar   string `gorm:"avatar"`
 	Poster   string `gorm:"poster"`
 }
@@ -14,7 +14,7 @@ type User struct {
 func (u *User) ToView() map[string]interface{} {
 	return map[string]interface{}{
 		"id":       u.ID,
-		"username": u.UserName,
+		"username": u.Username,
 		"avatar":   u.Avatar,
 		"poster":   u.Poster,
 	}

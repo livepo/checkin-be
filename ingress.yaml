@@ -8,9 +8,9 @@ spec:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`checkin.livepo.top`)
+      match: Host(`lottery.livepo.top`)
       services:
         - name: checkin
           port: 8080
   tls:
-    secretName: checkin-secret
+    secretName: lottery-cert

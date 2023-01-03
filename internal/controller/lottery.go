@@ -12,7 +12,7 @@ import (
 )
 
 type CheckinRequest struct {
-	UserName string `json:"username"`
+	Username string `json:"username"`
 	Avatar   string `json:"avatar"`
 	Poster   string `json:"poster"`
 }
@@ -28,8 +28,8 @@ func Checkin(c *gin.Context) {
 		return
 	}
 	user := model.User{}
-	if err := invoker.DB.Model(model.User{}).First(&user, "username = ?", req.UserName).Error; err != nil {
-		user.UserName = req.UserName
+	if err := invoker.DB.Model(model.User{}).First(&user, "username = ?", req.Username).Error; err != nil {
+		user.Username = req.Username
 		user.Avatar = req.Avatar
 		user.Poster = req.Poster
 	}
