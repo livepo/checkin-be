@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: checkin
+  name: checkin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: checkin
+  template:
+    metadata:
+      labels:
+        app: checkin
+    spec:
+      volumes:
+        - name: checkin
+          hostPath:
+            path: /opt/work/checkin-be/bin
+      containers:
+        - image: checkin:latest
+          imagePullPolicy: IfNotPresent
+          name: checkin
+          volumeMounts:
+            - name: checkin
+              mountPath: /data
+          # command: [ "python", "yespmp.py" ]
+          # command: [ "/bin/sh", "-c", "--" ]
+          # args: [ "while true; do sleep 30; done;" ]
