@@ -81,14 +81,14 @@ func GenerateExchangeCardPairs(c *gin.Context) {
 	}
 	rand.Seed(time.Now().UnixNano())
 	rand.Shuffle(len(arr), func(i, j int) { arr[i], arr[j] = arr[j], arr[i] })
-	pairs := make([][]int, 0)
+	pairs := make([][]uint, 0)
 	for i := 0; i < len(arr); i++ {
-		pair := make([]int, 2)
-		pair[0] = arr[i]
+		pair := make([]uint, 2)
+		pair[0] = users[arr[i]].ID
 		if i == len(arr)-1 {
-			pair[1] = arr[0]
+			pair[1] = users[arr[0]].ID
 		} else {
-			pair[1] = arr[i+1]
+			pair[1] = users[arr[i+1]].ID
 		}
 		pairs = append(pairs, pair)
 	}
