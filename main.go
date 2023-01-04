@@ -3,6 +3,10 @@ package main
 import (
 	"checkin-be/internal/controller"
 	"checkin-be/pkg/invoker"
+	"checkin-be/pkg/middleware"
+	"fmt"
+
+	"github.com/spf13/viper"
 
 	"github.com/gin-gonic/gin"
 )
@@ -15,6 +19,10 @@ func main() {
 	// Register the routes
 	router.Use(gin.Logger())
 	router.Use(gin.Recovery())
+	if viper.GetBool("debug") {
+		fmt.Println("run on debug mode")
+		router.Use(middleware.Cors())
+	}
 
 	api := router.Group("/api/v1")
 	api.GET("/checkin-users", controller.CheckinUsers)                              // 签到用户列表
